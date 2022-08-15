@@ -1,0 +1,31 @@
+<div id="<%= dom_id user %>">
+  <p>
+    <strong>Avatar:</strong>
+    <%= link_to user.avatar.filename, user.avatar if user.avatar.attached? %>
+    <br>
+    <b>blob.inspect:</b>
+    <%= user.avatar.blob.inspect %>
+    <br>
+    <b>url_for:</b>
+    <%= url_for user.avatar %>
+    <br>
+    <b>rails_blob_path with disposition:</b>
+    <%= rails_blob_path(user.avatar, disposition: "attachment") %>
+    <br>
+    <b>Rails.application.routes.url_helpers.rails_blob_path:</b>
+    <%= Rails.application.routes.url_helpers.rails_blob_path(user.avatar, only_path: true) %>
+    <br>
+    <b>rails_storage_proxy_path:</b>
+    <%= rails_storage_proxy_path(user.avatar) %>
+    <br>
+    <% if Rails.configuration.active_storage.service == :local %>
+      <b>active_storage_attachment.url is not available for Disk</b>
+    <% else %>
+      <b>active_storage_attachment.url:</b>
+      <%= user.avatar.url %>
+    <% end %>
+    <br>
+    <%# <%= image_tag user.avatar.representation(resize_to_limit: [100,100]) %1> %>
+    <%= image_tag user.avatar.variant(:thumb) %>
+  </p>
+</div>

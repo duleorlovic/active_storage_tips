@@ -1,0 +1,9 @@
+<div id="<%= dom_id message %>">
+  <p>
+    <strong>Images:</strong>
+    <% message.images.each do |image| %>
+      <div><%= link_to image.filename, image %></div>
+    <% end %>
+  </p>
+
+</div>
