@@ -59,7 +59,7 @@ public_aws:
 ```
 
 Bucket name can not contain underscore so only hyphen ( minus) is allowed (avoid
-dot since unless you are using bucket as website).
+dot unless you are using bucket as website).
 
 # Models
 
@@ -81,14 +81,14 @@ You can manually trigger:
 user.avatar.purge
 user.avatar.purge_later
 ```
-You can check the size
+You can check the number of blobs in db
 ```
 ActiveStorage::Blob.all.size
 ActiveStorage::VariantRecord.all
 ActiveStorage::Attachment.all
 ```
 
-To get the file path you can use
+To get the file path you can use `url_for` and `rails_blob_path`
 ```
 url_for(user.avatar)
 # => /rails/active_storage/blobs/redirect/:signed_id/my-avatar.png
@@ -108,9 +108,6 @@ user.avatar.url
 
 rails_storage_proxy_path(@user.avatar)
 # => /rails/active_storage/blobs/proxy/:signed_id/my-avatar.png
-
-# instead of rails_blob_path for attachment, for variant you need to use:
-Rails.application.routes.url_helpers.rails_representation_url(user.avatar.variant(resize_to_limit: [100,100]))
 ```
 
 # Variants
@@ -133,7 +130,7 @@ brew install vips
 ```
 
 User -> Attachment -> Blob
-        | avatar.variant is called on attachment but variant contains reference to blob_id
+        | .variant is called on attachment (avatar.variant) but variant contains reference to original blob_id
         -> VariantRecord -> Attachment -> Blob
         -> VariantRecord -> Attachment -> Blob
 
@@ -144,7 +141,7 @@ for that original blob_id. Each variation means new `ActiveStorage::Blob` and
 So when you delete user, all attachments and their blobs are deleted, also
 all variant_records for each blob (so variant_record -> attachment is also
 deleted and so variant_record -> attachment -> blob).
-Attachment is polyporhic to user and variant_record.
+Attachment is polymorhic to user and variant_record.
 ```
 ActiveStorage::Attachment.all
 [#<ActiveStorage::Attachment: id: 12, name: "avatar", record_type: "User", record_id: 7, blob_id: 12, created_at: Thu, 28 Jul 2022 14:10:43.499000000 UTC +00:00>,
@@ -157,6 +154,41 @@ ActiveStorage::VariantRecord.all
 ```
 
 Variants are created for all services (Disk, S3).
+
+First time it is requested it will download a file, proccess and upload as
+variant.
+```
+url_for user.avatar.variant(resize_to_limit: [100,100])
+
+# instead of rails_blob_path for attachment, for variant you need to use:
+Rails.application.routes.url_helpers.rails_representation_url(user.avatar.variant(resize_to_limit: [100,100]))
+```
+
+To define variants you can use
+```
+class MemberPicture < ApplicationRecord
+  has_one_attached :active_storage_attachment do |attachable|
+    # actual size is 50x50 but in case of retina displays we use double size
+    attachable.variant :icon, resize_to_limit: [100, 100]
+    attachable.variant :thumb, resize_to_limit: [400, 400]
+    attachable.variant :modal, resize_to_limit: [1000, 1000]
+    attachable.variant :thumb_blurred, resize_to_limit: [400, 400], gaussian_blur: "0x3" # 0x1 ... 0x10
+  end
+```
+
+When you upload pdf instead of image, you will see
+`ActiveStorage::InvariableError` so you have to limit input field accepted files
+like `data-dropzone-accepted-files='image/jpeg,image/png'`.
+Even in that case, file can be renamed `my.pdf.jpeg` so need to detect check if
+file is variable:
+```
+    <% if user.avatar.variable? %>
+      <%= image_tag user.avatar.variant(:thumb) %>
+    <% else %>
+      <%# send some admin notification to inspect the file %>
+      Can not generate variant
+    <% end %>
+```
 
 # CDN
 

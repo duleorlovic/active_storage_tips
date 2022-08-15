@@ -26,6 +26,10 @@
     <% end %>
     <br>
     <%# <%= image_tag user.avatar.representation(resize_to_limit: [100,100]) %1> %>
-    <%= image_tag user.avatar.variant(:thumb) %>
+    <% if user.avatar.variable? %>
+      <%= image_tag user.avatar.variant(:thumb) %>
+    <% else %>
+      Can not generate variant
+    <% end %>
   </p>
 </div>
