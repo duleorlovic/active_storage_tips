@@ -190,6 +190,11 @@ file is variable:
     <% end %>
 ```
 
+# Action Text
+
+https://edgeguides.rubyonrails.org/action_text_overview.html
+
+
 # CDN
 
 https://edgeguides.rubyonrails.org/active_storage_overview.html#putting-a-cdn-in-front-of-active-storage
