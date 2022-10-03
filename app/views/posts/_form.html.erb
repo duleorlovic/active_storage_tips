@@ -1,0 +1,10 @@
+<%= form_with(model: post) do |form| %>
+  <div>
+    <%= form.label :content, style: "display: block" %>
+    <%= form.rich_text_area :content %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

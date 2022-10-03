@@ -65,8 +65,8 @@ dot unless you are using bucket as website).
 
 
 ```
-rails generate scaffold User avatar:attachment
-rails generate scaffold Message images:attachments
+rails generate scaffold User name avatar:attachment
+rails generate scaffold Message content images:attachments
 ```
 
 You can attach manually
@@ -190,9 +190,51 @@ file is variable:
     <% end %>
 ```
 
+When avatar does not exists we try to show we will see the error
+```
+<%= url_for user.avatar %>
+
+ActionView::Template::Error: undefined method `persisted?' for nil:NilClass
+```
+solve it with a check if avatar is present
+```
+<% if user.avatar.attached? %>
+  <%= url_for user.avatar %>
+<% end %>
+```
+
+# Test
+
+Use fixtures for blobs and attachments
+This works in tests env, for example in system test but also in seed for
+development.
+Blob requires a file to exists on storage/aa/bb/aabbWNGW1VrxZ8Eu4zmyw13A
+In system test files will be uploaded to tmp/storage but preview also search
+storage so it is enough to copy there
+```
+mkdir -p storage/aa/bb
+cp test/fixtures/files/rails.jpg  storage/aa/bb/aabbWNGW1VrxZ8Eu4zmyw13A
+```
+
+For error
+```
+rails db:seed
+rails aborted!
+Foreign key violations found in your fixture data. Ensure you aren't referring to labels that don't exist on associations.
+/Users/dule/web-tips/active_storage_tips/db/seeds.rb:3:in `<main>'
+```
+solution is to reset db
+```
+rails db:migrate:reset
+```
+
 # Action Text
 
 https://edgeguides.rubyonrails.org/action_text_overview.html
+Install
+```
+rails action_text:install
+```
 
 
 # CDN

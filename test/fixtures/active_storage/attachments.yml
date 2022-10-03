@@ -1,0 +1,17 @@
+# https://github.com/duleorlovic/active_storage_tips/blob/main/test/fixtures/active_storage/attachments.yml
+avatar:
+  <%# this has to be the same name as in has_one_attached %>
+  name: avatar
+  record: user (User)
+  blob: avatar
+
+attachment:
+  name: images
+  record: message (Message)
+  blob: blob
+
+messages_second:
+  name: images
+  record_type: "Message"
+  record_id: <%= ActiveRecord::FixtureSet.identify(:message) %>
+  blob: messages_second

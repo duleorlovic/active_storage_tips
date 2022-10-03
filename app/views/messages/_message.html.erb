@@ -1,8 +1,15 @@
 <div id="<%= dom_id message %>">
   <p>
+    <strong>Content:</strong>
+    <%= message.content %>
+  </p>
+
+  <p>
     <strong>Images:</strong>
+    <%= message.images.attached? %>
     <% message.images.each do |image| %>
       <div><%= link_to image.filename, image %></div>
+      <%= image_tag url_for image %>
     <% end %>
   </p>
 

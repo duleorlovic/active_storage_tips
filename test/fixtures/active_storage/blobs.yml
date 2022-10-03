@@ -1,0 +1,34 @@
+# https://github.com/duleorlovic/active_storage_tips/blob/main/test/fixtures/active_storage/blobs.yml
+# This blob requires a file to exists on storage/aa/bb/aabbWNGW1VrxZ8Eu4zmyw13A
+# In system test files will be uploaded to tmp/storage but preview also search
+# storage so it is enough to copy there
+# mkdir -p storage/aa/bb
+# cp test/fixtures/files/rails.jpg  storage/aa/bb/aabbWNGW1VrxZ8Eu4zmyw13A
+blob:
+  key: aabbWNGW1VrxZ8Eu4zmyw13A
+  filename: rails.jpg
+  content_type: image/jpeg
+  metadata: '{"identified":true}'
+  byte_size: <%= File.size("test/fixtures/files/rails.jpg") %>
+  checksum: <%= Digest::MD5.file("test/fixtures/files/rails.jpg").base64digest %>
+  service_name: local
+
+# cp test/fixtures/files/rails_logo.png  storage/aa/bb/aabbWNGW1VrxZ8Eu4zmyw13C
+messages_second:
+  key: aabbWNGW1VrxZ8Eu4zmyw13C
+  filename: rails_logo.png
+  content_type: image/png
+  metadata: '{"identified":true}'
+  byte_size: <%= File.size("test/fixtures/files/rails_logo.png") %>
+  checksum: <%= Digest::MD5.file("test/fixtures/files/rails_logo.png").base64digest %>
+  service_name: local
+
+# cp test/fixtures/files/avatar.png  storage/aa/bb/aabbWNGW1VrxZ8Eu4zmyw13B
+avatar:
+  key: aabbWNGW1VrxZ8Eu4zmyw13B
+  filename: avatar.png
+  content_type: image/png
+  metadata: '{"identified":true}'
+  byte_size: <%= File.size("test/fixtures/files/avatar.png") %>
+  checksum: <%= Digest::MD5.file("test/fixtures/files/avatar.png").base64digest %>
+  service_name: local

@@ -1,4 +1,4 @@
-json.extract! message, :id, :images, :created_at, :updated_at
+json.extract! message, :id, :content, :images, :created_at, :updated_at
 json.url message_url(message, format: :json)
 json.images do
   json.array!(message.images) do |image|
